@@ -1,0 +1,31 @@
+form {
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+}
+canvas {
+    border: 1px dashed black;
+    background-color: white;
+}
+
+* {
+    background-color: salmon;
+}
+h1 {
+    font-family: "Oswald";
+}
+p {
+    color: darkblue;
+    font-size: 20px;
+}
+ul a {
+    font-family: "Oswald", serif;
+    font-size: 30px;
+    color: green;
+}
+nav li {
+    display: inline;
+}
+nav a {
+    font-size: 20px;
+}

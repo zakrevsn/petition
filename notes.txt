@@ -1,0 +1,26 @@
+
+GET/PETITION
+render petition template (that"s the one with the 3 input fields and the canvas)
+POST/PETITION
+render petition template with error messageif there's an error
+redirect to thank you page AFTER we set the cookie
+
+3 GET/thanks /petition/signed in the GitHub notes)
+render the thanks template
+
+4 GET/signers
+render the signers template
+
+TEMPLATES
+
+petition - page with the canvas and the first and the last fields
+thanks
+signers
+layout
+(opt) partial
+
+QUIERIES
+
+INSERT INTO signatures
+SELECT to get names and signers
+(opt) - SELECT to get number of signers
