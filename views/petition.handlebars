@@ -1,12 +1,6 @@
 <h1>Welcome to my petition</h1>
 <p>This is my petition. I don't know yet what it's going to be about,
-but I want to get as many signatures as I can! Thank you signing!</p>
-<form method="post">
-    <div>
-        <input id="firstname" name='firstname' type='text'/>
-        <input id="lastname" name='lastname' type='text'/>
-    </div>
-    <canvas height="200px" width="600px"></canvas>
-    <input id="signature" name='signature' type='hidden'/>
-    <button id="submit" type="submit">SIGN IT</button>
-</form>
+but I want to get as many signatures as I can! Thank you for signing!</p>
+{{error}}
+{{>form}}
+<script src="/script.js"></script>

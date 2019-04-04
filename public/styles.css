@@ -18,6 +18,10 @@ p {
     color: darkblue;
     font-size: 20px;
 }
+h2 {
+    font-family: "Oswald";
+    color: red;
+}
 ul a {
     font-family: "Oswald", serif;
     font-size: 30px;

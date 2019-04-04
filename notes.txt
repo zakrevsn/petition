@@ -24,3 +24,12 @@ QUIERIES
 INSERT INTO signatures
 SELECT to get names and signers
 (opt) - SELECT to get number of signers
+
+PART 2
+Thank you page will show signature:
+middlweare function
+data - signature id
+hash - turn string into another string(always the same);
+cookie session
+
+middlewear gets the data, json stringify it and save it in a cookie;
