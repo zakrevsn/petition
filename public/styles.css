@@ -1,35 +1,42 @@
+body {
+    background-image: url("/images/1010.png");
+    background-color: rgba(255, 255, 255, 0.3);
+    background-blend-mode: lighten;
+}
+header {
+    font-family: "Anton";
+    font-size: 20px;
+}
 form {
     display: flex;
     flex-direction: column;
     width: 600px;
 }
+img {
+    background-color: white;
+}
 canvas {
     border: 1px dashed black;
     background-color: white;
-}
-
-* {
-    background-color: salmon;
 }
 h1 {
     font-family: "Oswald";
 }
 p {
-    color: darkblue;
+    color: black;
+    font-weight: bold;
     font-size: 20px;
 }
 h2 {
     font-family: "Oswald";
     color: red;
 }
-ul a {
-    font-family: "Oswald", serif;
-    font-size: 30px;
-    color: green;
+/* form div {
+    text-align: center;
+} */
+#button {
+    text-align: center;
 }
-nav li {
-    display: inline;
-}
-nav a {
-    font-size: 20px;
+button {
+    background-color: salmon;
 }
