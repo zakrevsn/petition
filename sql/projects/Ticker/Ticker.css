@@ -1,0 +1,26 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#ticker {
+    position: relative;
+    overflow-x: hidden;
+    /* choose space as frame to show headlines screenlike, also works for slides; x -for horizontal, can be used without/ */
+    height: 60px;
+    border-bottom: 1px dashed orange;
+}
+
+#headlines {
+    position: absolute;
+    left: 50%;
+    white-space: nowrap;
+    margin-top: 20px;
+}
+
+#headlines a {
+    padding-right: 20px;
+    text-decoration: none;
+    color: darkblue;
+    font-size: 20px;
+}

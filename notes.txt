@@ -33,3 +33,30 @@ hash - turn string into another string(always the same);
 cookie session
 
 middlewear gets the data, json stringify it and save it in a cookie;
+
+passwort: 123456 + "mysalt";
+bcript: fkjvs;iufhv;ishfvisry38rfewriufgh
+
+server routes
+1 GET/register
+2 Post/register
+store user id an a cookieSession
+3. GET/login
+4. POST/login
+-- store user in a cookie session
+
+SQL
+write CREATE TABLE command for users TABLE
+modify signature table so that it has column with user ID
+signatures
+id - signature - first - last - userId
+userId is just the id from the user column
+
+db quiries
+1.INSERT users
+2. SELECT to get hashed password from db based on the email provided by user
+3 modify the INSERT INTO signature to also insert the userid
+
+bcrypt
+1. hash password in registration
+2 check password in login

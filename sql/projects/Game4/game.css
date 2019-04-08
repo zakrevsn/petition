@@ -1,0 +1,147 @@
+body {
+    cursor: auto;
+    background-image: url("bvg-background.png"),
+        linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+    background-blend-mode: overlay;
+    background-size: cover;
+    margin: 0;
+    font-family: "Margarine";
+}
+.board {
+    display: flex;
+    margin-top: 30px;
+    margin-left: 10px;
+    justify-content: center;
+    cursor: grab;
+}
+.slot {
+    display: flex;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    background-color: salmon;
+    align-items: center;
+    font-size: 50px;
+}
+.hole {
+    display: flex;
+    width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+}
+.slot.player1 .hole {
+    background-color: yellow;
+    font-size: 50px;
+}
+.slot.player1 .hole::before {
+    content: "🍕";
+}
+.slot.player2 .hole {
+    background-color: red;
+    font-size: 50px;
+}
+.slot.player2 .hole::before {
+    content: "🍔";
+}
+
+.slot.player1-preview .hole {
+    font-size: 50px;
+}
+.slot.player1-preview .hole::before {
+    content: "🍕";
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.slot.player2-preview .hole {
+    font-size: 50px;
+}
+.slot.player2-preview .hole::before {
+    content: "🍔";
+    color: rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+    text-align: center;
+    color: brown;
+    background-color: white;
+    font-family: "Margarine";
+    font-size: 50px;
+    margin: 0;
+}
+button {
+    display: block;
+    /* position: relative; */
+    float: left;
+    bottom: 0;
+    right: 0;
+    height: 50px;
+    width: 100px;
+    background-color: lightgreen;
+    font-size: 15px;
+    color: blue;
+    font-family: "Margarine";
+}
+.players {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.players div {
+    transition: all 0.2s ease-in-out;
+}
+.players div:hover {
+    transform: scale(1.4);
+}
+.p1style {
+    display: flex;
+    width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    background-color: yellow;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+}
+.p2style {
+    display: flex;
+    width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    background-color: red;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+}
+.vs {
+    font-size: 30px;
+    color: blue;
+}
+.winnerM {
+    display: none;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    font-size: 50px;
+    color: red;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+.winnerM p {
+    background-color: white;
+    cursor: pointer;
+}
+p {
+    margin-top: 30%;
+}

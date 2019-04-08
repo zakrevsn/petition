@@ -40,10 +40,20 @@ app.get("/petition", (req, res) => {
     });
 });
 
-app.get("/thanks", (req, res) => {
-    console.log("this is my user id", req.session);
+app.get("/login", (req, res) => {
+    res.render("login", {
+        layout: "main"
+    });
+});
 
-    db.getSignature(req.session.id).then(results => {
+app.get("/register", (req, res) => {
+    res.render("register", {
+        layout: "main"
+    });
+});
+
+app.get("/thanks", (req, res) => {
+    db.getSignature(req.session.signatureId).then(results => {
         res.render("thanks", {
             layout: "main",
             signature: results.rows[0].signature
@@ -62,13 +72,9 @@ app.get("/signers", (req, res) => {
 
 app.post("/petition", (req, res) => {
     console.log("POST /petition");
-    db.addSign(req.body.firstname, req.body.lastname, req.body.signature)
+    db.addSign(req.session.firstname, req.session.lastname, req.body.signature)
         .then(results => {
-            console.log(results.rows[0]);
-            req.session.firstname = results.rows[0].firstname;
-            req.session.lastname = results.rows[0].lastname;
-            // req.session.signature = results.rows[0].signature;
-            req.session.id = results.rows[0].id;
+            req.session.signatureId = results.rows[0].id;
             res.redirect("/thanks");
         })
         .catch(err => {
@@ -83,8 +89,96 @@ app.post("/petition", (req, res) => {
         });
 });
 app.get("/", (req, res) => {
-    res.redirect("/petition");
+    res.redirect("/register");
 });
+app.post("/register", (req, res) => {
+    hashPassword(req.body.password).then(hash => {
+        db.addUser(req.body.firstname, req.body.lastname, req.body.email, hash)
+            .then(() => {
+                res.redirect("/login");
+            })
+            .catch(err => {
+                res.render("register", {
+                    layout: "main",
+                    error: "An error occurred.Please try again",
+                    firstname: req.body.firstname,
+                    lastname: req.body.lastname,
+                    email: req.body.email
+                });
+                console.log("err in addUser: ", err);
+            });
+    });
+});
+
+app.post("/login", (req, res) => {
+    db.getUser(req.body.email)
+        .then(results => {
+            if (results.rows.length == 1) {
+                checkPassword(req.body.password, results.rows[0].password)
+                    .then(() => {
+                        req.session.firstname = results.rows[0].firstname;
+                        req.session.lastname = results.rows[0].lastname;
+                        req.session.email = results.rows[0].email;
+                        req.session.userId = results.rows[0].id;
+                        res.redirect("/petition");
+                    })
+                    .catch(() => {
+                        res.render("login", {
+                            layout: "main",
+                            error:
+                                "Password or email is wrong. Please try again",
+                            email: req.body.email
+                        });
+                    });
+            } else {
+                res.render("login", {
+                    layout: "main",
+                    error: "Password or email is wrong. Please try again",
+                    email: req.body.email
+                });
+            }
+        })
+        .catch(err => {
+            res.render("login", {
+                layout: "main",
+                error: "An error occurred.Please try again",
+                email: req.body.email
+            });
+            console.log("err in User: ", err);
+        });
+});
+var bcrypt = require("bcryptjs");
+
+function hashPassword(plainTextPassword) {
+    return new Promise(function(resolve, reject) {
+        bcrypt.genSalt(function(err, salt) {
+            if (err) {
+                return reject(err);
+            }
+            bcrypt.hash(plainTextPassword, salt, function(err, hash) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(hash);
+            });
+        });
+    });
+}
+function checkPassword(textEnteredInLoginForm, hashedPasswordFromDatabase) {
+    return new Promise(function(resolve, reject) {
+        bcrypt.compare(
+            textEnteredInLoginForm,
+            hashedPasswordFromDatabase,
+            function(err, doesMatch) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(doesMatch);
+                }
+            }
+        );
+    });
+}
 //how do we query a database from an express server?
 
 app.listen(8080, () => console.log("PETITION"));

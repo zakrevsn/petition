@@ -1,0 +1,68 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+#carousel {
+    position: relative;
+    height: 600px;
+    overflow: hidden;
+    text-align: center;
+}
+
+nav {
+    display: flex;
+    position: relative;
+    height: 10px;
+    width: 100%;
+    top: 90%;
+    align-items: center;
+    justify-content: center;
+}
+
+nav div {
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+    border: solid white;
+    background: none;
+    z-index: 2;
+    margin: 10px;
+    cursor: pointer;
+}
+
+nav div.onscreen {
+    background-color: white;
+}
+
+.kitty {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: translateX(100%);
+}
+
+.kitty.onscreen {
+    transform: translateX(0);
+    transition-property: transform;
+    transition-duration: 1s;
+    z-index: 1;
+}
+
+.kitty.exit {
+    transform: translateX(-100%);
+    transition-property: transform;
+    transition-duration: 1s;
+}
+
+.kitty img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+}

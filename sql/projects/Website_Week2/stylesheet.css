@@ -1,0 +1,217 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+header {
+    padding-top: 10px;
+}
+#Parlament {
+    position: relative;
+    width: 100%;
+    padding-top: 2%;
+    z-index: -2;
+}
+.splash {
+    position: relative;
+    /* top: 0;
+    left: 0; */
+    width: 100%;
+    /* height: 100%; */
+}
+.center {
+    position: absolute;
+    text-align: center;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%);
+}
+
+#Berlin {
+    color: white;
+    /* margin-top: -80%; */
+    text-align: center;
+    font-style: italic;
+    font-family: serif;
+    font-size: 30px;
+}
+
+#hamburger {
+    float: right;
+    margin-top: 0;
+    height: 30px;
+    cursor: pointer;
+}
+#logo {
+    height: 40px;
+}
+#Start {
+    background-color: orange;
+    color: brown;
+    border: 5px brown solid;
+    text-align: center;
+    width: 200px;
+    margin: 0 auto;
+    font-size: 30px;
+    font-family: serif;
+    border-radius: 35px;
+    padding-left: 45px;
+    padding-right: 45px;
+}
+
+.item {
+    padding-left: 50px;
+    /* position: relative; */
+    margin-bottom: 10px;
+}
+.item::before {
+    position: absolute;
+    content: "";
+    height: 10px;
+    width: 10px;
+    top: 0;
+    left: 0;
+}
+#list li:first-child {
+    background-image: url("assets/cat.svg");
+    background-repeat: no-repeat;
+    background-size: 35px 35px;
+}
+#list li:nth-child(2) {
+    background-image: url("assets/swim.svg");
+    background-repeat: no-repeat;
+    background-size: 35px 35px;
+}
+#list li:nth-child(3) {
+    background-image: url("assets/world.svg");
+    background-repeat: no-repeat;
+    background-size: 35px 35px;
+}
+#list li:last-child {
+    background-image: url("assets/columns.svg");
+    background-repeat: no-repeat;
+    background-size: 35px 35px;
+}
+section {
+    background-color: lightgrey;
+    margin-top: 0;
+}
+
+#list {
+    column-count: 2;
+    margin: -4px;
+    list-style: none;
+    padding-top: 10px;
+}
+footer {
+    background-color: grey;
+    padding: 5px;
+    padding-left: 15px;
+    color: white;
+    height: auto;
+}
+#hamburger-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .5);
+    display: none;
+}
+#hamburger-menu.on {
+    display: block;
+}
+
+
+#menu {
+    background-color: white;
+    position: fixed;
+    max-width: 300px;
+    min-width: 150px;
+    height: 100vh;
+    width: 20%;
+    height: 100vh;
+    top:0 ;
+    cursor: pointer;
+    right: -302px;
+    z-index: 2;
+    transition: translateX(100%);
+    transition-duration: 1s;
+}
+#menu.on {
+    right: 0;
+}
+
+#x {
+    position: absolute;
+    display: block;
+    right: 20px;
+    top: 10px;
+    font-size: 15px;
+}
+
+.text {
+    color: darkblue;
+    font-size: 20px;
+    margin-top: 30px;
+    display: block;
+    height: 100%;
+
+}
+.text dd:last-child {
+    position: absolute;
+    bottom: 20px;
+}
+.text a {
+    text-decoration: none;
+}
+
+#popUpContainer {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .5);
+    display: none;
+}
+
+#popUp {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+}
+#popUpx {
+    width: 100%;
+    text-align: right;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 480px) {
+    li::before {
+        height: 5px;
+        width: 5px;
+        top: 0;
+        left: 0;
+    }
+    #Start {
+        border: 2px brown solid;
+        width: 100px;
+        margin: 0 auto;
+        font-size: 10px;
+        font-family: serif;
+        border-radius: 35px;
+        padding-left: 25px;
+        padding-right: 25px;
+        padding-bottom: 5px;
+        padding-top: 5px;
+    }
+    #Berlin {
+        font-size: 15px;
+    }
+    #list {
+        column-count: 1;
+    }
+}
