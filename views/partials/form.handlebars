@@ -1,8 +1,4 @@
 <form id='form' method="post">
-    <div id="names">
-        <input id="firstname" placeholder="first name" name='firstname' type='text' value='{{firstname}}'/>
-        <input id="lastname" placeholder="last name" name='lastname' type='text' value='{{lastname}}'/>
-    </div>
     <canvas id='canvas' height="200px" width="600px"></canvas>
     {{>csrf}}
     <input type='hidden' name='signature' id='signature' value='{{signature}}'/>

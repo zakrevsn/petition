@@ -51,6 +51,11 @@ app.get("/register", (req, res) => {
         layout: "main"
     });
 });
+app.get("/profiles", (req, res) => {
+    res.render("profiles", {
+        layout: "main"
+    });
+});
 
 app.get("/thanks", (req, res) => {
     db.getSignature(req.session.signatureId).then(results => {
@@ -72,7 +77,7 @@ app.get("/signers", (req, res) => {
 
 app.post("/petition", (req, res) => {
     console.log("POST /petition");
-    db.addSign(req.session.firstname, req.session.lastname, req.body.signature)
+    db.addSign(req.session.userId, req.body.signature)
         .then(results => {
             req.session.signatureId = results.rows[0].id;
             res.redirect("/thanks");
@@ -81,8 +86,6 @@ app.post("/petition", (req, res) => {
             res.render("petition", {
                 layout: "main",
                 error: "An error occurred.Please try again",
-                firstname: req.body.firstname,
-                lastname: req.body.lastname,
                 signature: req.body.signature
             });
             console.log("err in addSign: ", err);
@@ -120,7 +123,7 @@ app.post("/login", (req, res) => {
                         req.session.lastname = results.rows[0].lastname;
                         req.session.email = results.rows[0].email;
                         req.session.userId = results.rows[0].id;
-                        res.redirect("/petition");
+                        res.redirect("/profiles");
                     })
                     .catch(() => {
                         res.render("login", {
@@ -145,6 +148,37 @@ app.post("/login", (req, res) => {
                 email: req.body.email
             });
             console.log("err in User: ", err);
+        });
+});
+app.post("/profiles", (req, res) => {
+    if (!req.body.age && !req.body.city && !req.body.homepage) {
+        return res.redirect("/petition");
+    }
+    if (
+        !req.body.homepage.startsWith("http://") &&
+        !req.body.homepage.startsWith("https://") &&
+        !req.body.homepage.startsWith("//")
+    ) {
+        req.body.homepage = "http://" + req.body.homepage;
+    }
+    db.addUserProfile(
+        req.body.age,
+        req.body.city,
+        req.body.homepage,
+        req.session.userId
+    )
+        .then(() => {
+            res.redirect("/petition");
+        })
+        .catch(err => {
+            res.render("profiles", {
+                layout: "main",
+                error: "An error occurred.Please try again",
+                age: req.body.age,
+                city: req.body.city,
+                url: req.body.homepage
+            });
+            console.log("err in addUserProfile: ", err);
         });
 });
 var bcrypt = require("bcryptjs");
