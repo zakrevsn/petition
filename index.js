@@ -52,13 +52,18 @@ app.get("/register", (req, res) => {
     });
 });
 app.get("/profiles", (req, res) => {
-    res.render("profiles", {
-        layout: "main"
+    db.getUserProfile(req.session.userId).then(results => {
+        res.render("profiles", {
+            layout: "main",
+            age: results.rows[0].age,
+            city: results.rows[0].city,
+            homepage: results.rows[0].url
+        });
     });
 });
 
 app.get("/thanks", (req, res) => {
-    db.getSignature(req.session.signatureId).then(results => {
+    db.getSignature(req.session.userId).then(results => {
         res.render("thanks", {
             layout: "main",
             signature: results.rows[0].signature
@@ -72,6 +77,41 @@ app.get("/signers", (req, res) => {
             layout: "main",
             signers: results.rows
         });
+    });
+});
+app.get("/signers/:city", (req, res) => {
+    db.getSignersCity(req.params.city).then(results => {
+        console.log(results.rows);
+        res.render("signers", {
+            layout: "main",
+            signers: results.rows,
+            city: req.params.city
+        });
+    });
+});
+app.get("/update", (req, res) => {
+    db.getUserProfile(req.session.userId).then(results => {
+        res.render("update", {
+            layout: "main",
+            firstname: results.rows[0].firstname,
+            lastname: results.rows[0].lastname,
+            email: results.rows[0].email,
+            age: results.rows[0].age,
+            city: results.rows[0].city,
+            homepage: results.rows[0].url
+        });
+    });
+});
+app.get("/", (req, res) => {
+    res.redirect("/register");
+});
+app.get("/logout", (req, res) => {
+    req.session = null;
+    res.redirect("/login");
+});
+app.get("/deletesign", (req, res) => {
+    db.deleteSignature(req.session.userId).then(() => {
+        res.redirect("/petition");
     });
 });
 
@@ -91,9 +131,7 @@ app.post("/petition", (req, res) => {
             console.log("err in addSign: ", err);
         });
 });
-app.get("/", (req, res) => {
-    res.redirect("/register");
-});
+
 app.post("/register", (req, res) => {
     hashPassword(req.body.password).then(hash => {
         db.addUser(req.body.firstname, req.body.lastname, req.body.email, hash)
@@ -180,6 +218,32 @@ app.post("/profiles", (req, res) => {
             });
             console.log("err in addUserProfile: ", err);
         });
+});
+app.post("/update", (req, res) => {
+    hashPassword(req.body.password).then(hash => {
+        db.getUserProfile(req.session.userId).then(results => {
+            if (!req.body.password) {
+                hash = results.rows[0].password;
+            }
+            db.editUserProfile(
+                req.body.firstname,
+                req.body.lastname,
+                req.body.email,
+                req.body.age,
+                req.body.city,
+                req.body.homepage,
+                req.session.userId,
+                hash
+            )
+                .then(() => {
+                    res.redirect("/thanks");
+                })
+                .catch(err => {
+                    res.redirect("/update");
+                    console.log("err in addUserProfile", err);
+                });
+        });
+    });
 });
 var bcrypt = require("bcryptjs");
 

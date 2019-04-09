@@ -1,2 +1,12 @@
-<h1>Signers</h1>
-{{#signers}}<p>{{firstname}} {{lastname}}</p>{{/signers}}
+<h1>Signers {{#if city}}from {{city}}{{/if}}</h1>
+{{#signers}}
+<p>
+{{#if url}}
+<a href="{{url}}">{{firstname}} {{lastname}}</a>{{#if age}}, {{age}}{{/if}}
+{{#if city}}from <a href="/signers/{{city}}">{{city}}</a>{{/if}}
+{{else}}
+{{firstname}} {{lastname}}{{#if age}}, {{age}}{{/if}}
+{{#if city}}from <a href="/signers/{{city}}">{{city}}</a>{{/if}}
+{{/if}}
+</p>
+{{/signers}}

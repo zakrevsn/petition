@@ -19,7 +19,7 @@ img {
 canvas {
     border: 1px dashed black;
     background-color: white;
-    height: 100px;
+    /* height: 100px; */
 }
 h1 {
     font-family: "Oswald";

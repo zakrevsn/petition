@@ -20,7 +20,7 @@ canvas.addEventListener("mousemove", function(evt) {
     ctx.moveTo(clientX, clientY);
     ctx.strokeStyle = "green";
     ctx.lineTo(evt.offsetX, evt.offsetY);
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 3;
     ctx.stroke();
     clientX = evt.offsetX;
     clientY = evt.offsetY;
