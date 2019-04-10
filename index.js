@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const db = require("./db");
 var csurf = require("csurf");
+const cookieSession = require("cookie-session");
 
 var hb = require("express-handlebars");
 app.engine("handlebars", hb());
@@ -13,8 +14,6 @@ app.use(
         extended: false
     })
 );
-const cookieSession = require("cookie-session");
-
 app.use(
     cookieSession({
         secret: `I'm always angry.`,
@@ -51,6 +50,10 @@ app.get("/register", (req, res) => {
         layout: "main"
     });
 });
+// app.get("/register", (req, res, next) => {
+//     if (req.session.userId) {
+//         res.redirect('/petition');
+//     }
 app.get("/profiles", (req, res) => {
     db.getUserProfile(req.session.userId).then(results => {
         res.render("profiles", {
@@ -279,4 +282,4 @@ function checkPassword(textEnteredInLoginForm, hashedPasswordFromDatabase) {
 }
 //how do we query a database from an express server?
 
-app.listen(8080, () => console.log("PETITION"));
+app.listen(process.env.PORT || 8080, () => console.log("PETITION"));

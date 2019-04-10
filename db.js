@@ -1,7 +1,9 @@
 var spicedPg = require("spiced-pg");
 
 var db = spicedPg("postgres:postgres:postgres@localhost:5432/tabasco-petition");
-
+var dbUrl =
+    process.env.DATABASE_URL ||
+    "postgres://spicedling:password@localhost:5432/petition";
 exports.addSign = function addSign(userId, signature) {
     let q = `INSERT INTO signature (user_id, signature) VALUES ($1, $2) RETURNING * `;
     let params = [userId, signature];
