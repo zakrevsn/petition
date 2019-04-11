@@ -280,6 +280,5 @@ function checkPassword(textEnteredInLoginForm, hashedPasswordFromDatabase) {
         );
     });
 }
-//how do we query a database from an express server?
 
 app.listen(process.env.PORT || 8080, () => console.log("PETITION"));
