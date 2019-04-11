@@ -3,6 +3,12 @@ const app = express();
 const db = require("./db");
 var csurf = require("csurf");
 const cookieSession = require("cookie-session");
+const {
+    requireSignature,
+    requireNoSignature,
+    requireLoggedInUser,
+    requireLoggedOutUser
+} = require("./middleware");
 
 var hb = require("express-handlebars");
 app.engine("handlebars", hb());
@@ -33,19 +39,19 @@ app.get("/favicon.ico", (req, res) => {
     res.send("");
 });
 
-app.get("/petition", (req, res) => {
+app.get("/petition", requireNoSignature, (req, res) => {
     res.render("petition", {
         layout: "main"
     });
 });
 
-app.get("/login", (req, res) => {
+app.get("/login", requireLoggedOutUser, (req, res) => {
     res.render("login", {
         layout: "main"
     });
 });
 
-app.get("/register", (req, res) => {
+app.get("/register", requireLoggedOutUser, (req, res) => {
     res.render("register", {
         layout: "main"
     });
@@ -54,7 +60,7 @@ app.get("/register", (req, res) => {
 //     if (req.session.userId) {
 //         res.redirect('/petition');
 //     }
-app.get("/profiles", (req, res) => {
+app.get("/profiles", requireLoggedInUser, (req, res) => {
     db.getUserProfile(req.session.userId).then(results => {
         res.render("profiles", {
             layout: "main",
@@ -65,7 +71,7 @@ app.get("/profiles", (req, res) => {
     });
 });
 
-app.get("/thanks", (req, res) => {
+app.get("/thanks", requireSignature, (req, res) => {
     db.getSignature(req.session.userId).then(results => {
         res.render("thanks", {
             layout: "main",
@@ -74,7 +80,7 @@ app.get("/thanks", (req, res) => {
     });
 });
 
-app.get("/signers", (req, res) => {
+app.get("/signers", requireSignature, (req, res) => {
     db.getSigners().then(results => {
         res.render("signers", {
             layout: "main",
@@ -82,7 +88,7 @@ app.get("/signers", (req, res) => {
         });
     });
 });
-app.get("/signers/:city", (req, res) => {
+app.get("/signers/:city", requireSignature, (req, res) => {
     db.getSignersCity(req.params.city).then(results => {
         console.log(results.rows);
         res.render("signers", {
@@ -92,7 +98,7 @@ app.get("/signers/:city", (req, res) => {
         });
     });
 });
-app.get("/update", (req, res) => {
+app.get("/update", requireLoggedInUser, (req, res) => {
     db.getUserProfile(req.session.userId).then(results => {
         res.render("update", {
             layout: "main",
@@ -105,20 +111,20 @@ app.get("/update", (req, res) => {
         });
     });
 });
-app.get("/", (req, res) => {
-    res.redirect("/register");
+app.get("/", requireLoggedInUser, (req, res) => {
+    res.redirect("/petition");
 });
 app.get("/logout", (req, res) => {
     req.session = null;
     res.redirect("/login");
 });
-app.get("/deletesign", (req, res) => {
+app.get("/deletesign", requireSignature, (req, res) => {
     db.deleteSignature(req.session.userId).then(() => {
         res.redirect("/petition");
     });
 });
 
-app.post("/petition", (req, res) => {
+app.post("/petition", requireNoSignature, (req, res) => {
     console.log("POST /petition");
     db.addSign(req.session.userId, req.body.signature)
         .then(results => {
@@ -135,7 +141,7 @@ app.post("/petition", (req, res) => {
         });
 });
 
-app.post("/register", (req, res) => {
+app.post("/register", requireLoggedOutUser, (req, res) => {
     hashPassword(req.body.password).then(hash => {
         db.addUser(req.body.firstname, req.body.lastname, req.body.email, hash)
             .then(() => {
@@ -154,17 +160,22 @@ app.post("/register", (req, res) => {
     });
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", requireLoggedOutUser, (req, res) => {
     db.getUser(req.body.email)
         .then(results => {
             if (results.rows.length == 1) {
                 checkPassword(req.body.password, results.rows[0].password)
                     .then(() => {
-                        req.session.firstname = results.rows[0].firstname;
-                        req.session.lastname = results.rows[0].lastname;
-                        req.session.email = results.rows[0].email;
-                        req.session.userId = results.rows[0].id;
-                        res.redirect("/profiles");
+                        db.getSignature(results.rows[0].id).then(sigResult => {
+                            req.session.firstname = results.rows[0].firstname;
+                            req.session.lastname = results.rows[0].lastname;
+                            req.session.email = results.rows[0].email;
+                            req.session.userId = results.rows[0].id;
+                            if (sigResult.rows.length > 0) {
+                                req.session.signatureId = sigResult.rows[0].id;
+                            }
+                            res.redirect("/profiles");
+                        });
                     })
                     .catch(() => {
                         res.render("login", {
@@ -191,7 +202,7 @@ app.post("/login", (req, res) => {
             console.log("err in User: ", err);
         });
 });
-app.post("/profiles", (req, res) => {
+app.post("/profiles", requireLoggedInUser, (req, res) => {
     if (!req.body.age && !req.body.city && !req.body.homepage) {
         return res.redirect("/petition");
     }
@@ -222,7 +233,7 @@ app.post("/profiles", (req, res) => {
             console.log("err in addUserProfile: ", err);
         });
 });
-app.post("/update", (req, res) => {
+app.post("/update", requireLoggedInUser, (req, res) => {
     hashPassword(req.body.password).then(hash => {
         db.getUserProfile(req.session.userId).then(results => {
             if (!req.body.password) {
@@ -280,5 +291,7 @@ function checkPassword(textEnteredInLoginForm, hashedPasswordFromDatabase) {
         );
     });
 }
-
-app.listen(process.env.PORT || 8080, () => console.log("PETITION"));
+module.exports = app;
+if (require.main == module) {
+    app.listen(process.env.PORT || 8080, () => console.log("PETITION"));
+}
