@@ -19,7 +19,7 @@ exports.getSigners = function getSigners() {
     );
 };
 exports.getSignature = function getSignature(id) {
-    let q = `SELECT signature FROM signature WHERE user_id=$1`;
+    let q = `SELECT * FROM signature WHERE user_id=$1`;
     let params = [id];
     return db.query(q, params);
 };

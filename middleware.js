@@ -6,11 +6,13 @@ function requireLoggedInUser(req, res, next) {
 }
 
 function requireNoSignature(req, res, next) {
+    console.log("reqNoSign", req.session);
     if (!req.session.userId) {
         return res.redirect("/register");
     }
 
     if (req.session.signatureId) {
+        console.log("found sign");
         return res.redirect("/thanks");
     }
     next();

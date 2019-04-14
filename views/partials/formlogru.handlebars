@@ -1,0 +1,8 @@
+<form id='form' method="post">
+    <div id="login">
+        <input id="email" placeholder="email" name='email' type='text' value='{{email}}'/>
+        <input id="password" placeholder="пароль" name='password' type='password'/>
+    </div>
+    {{>csrf}}
+    <div id="button"><button id="login" type="submit">ВОЙТИ</button></div>
+</form>

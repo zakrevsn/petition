@@ -1,0 +1,10 @@
+<form id='form' method="post">
+    <div id="register">
+        <input id="firstname" placeholder="имя" name='firstname' type='text' value='{{firstname}}'/>
+        <input id="lastname" placeholder="фамилия" name='lastname' type='text' value='{{lastname}}'/>
+        <input id="email" placeholder="email" name='email' type='text' value='{{email}}'/>
+        <input id="password" placeholder="пароль" name='password' type='password'/>
+    </div>
+    {{>csrf}}
+    <div id="button"><button id="register" type="submit">РЕГИСТРАЦИЯ</button></div>
+</form>

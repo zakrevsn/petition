@@ -1,0 +1,13 @@
+<h1>Кто подписал петицию {{#if city}}из города {{city}}{{/if}}</h1>
+{{#signers}}
+<p>
+{{#if url}}
+<a href="{{url}}">{{firstname}} {{lastname}}</a>{{#if age}}, {{age}}{{/if}}
+{{#if city}}из города <a href="/signers/{{city}}">{{city}}</a>{{/if}}
+{{else}}
+{{firstname}} {{lastname}}{{#if age}}, {{age}}{{/if}}
+{{#if city}}из города <a href="/signers/{{city}}">{{city}}</a>{{/if}}
+{{/if}}
+</p>
+{{/signers}}
+<p><a href="/thanks">Вернуться к подписи</a></p>

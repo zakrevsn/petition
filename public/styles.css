@@ -8,6 +8,20 @@ header {
     font-size: 20px;
     background-color: lightblue;
 }
+#logout {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 20px;
+    font-size: 25px;
+}
+#login2 {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 20px;
+    font-size: 25px;
+}
 form {
     display: flex;
     flex-direction: column;

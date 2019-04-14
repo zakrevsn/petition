@@ -1,2 +1,10 @@
-<header>#sustainableFashion
-        #sensibleConsumption</header>
+<header>
+    <a href="/lang/ru">🇷🇺</a>
+    <a href="/lang/en">🇬🇧</a>
+    #sustainableFashion
+        #sensibleConsumption
+        {{#if userId}}
+<a id="logout" href="/logout">Log out</a>
+{{else}} <a id="login2" id="login" href="/login">Log in</a>
+        {{/if}}
+</header>

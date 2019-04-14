@@ -1,0 +1,13 @@
+<form id='form' method="post">
+    <div id="update">
+        <input id="firstname" placeholder="имя" name='firstname' type='text' value='{{firstname}}'/>
+        <input id="lastname" placeholder="фамилия" name='lastname' type='text' value='{{lastname}}'/>
+        <input id="email" placeholder="email" name='email' type='text' value='{{email}}'/>
+        <input id="password" placeholder="пароль" name='password' type='password'/>
+        <input id="age" placeholder="возраст" name='age' type='number' value='{{age}}'/>
+        <input id="city" placeholder="город" name='city' type='text' value='{{city}}'/>
+        <input id="homepage" placeholder="Ваша страничка" name='homepage' type='url' value='{{url}}'/>
+    </div>
+    {{>csrf}}
+    <div id="button"><button id="submit" type="submit">СОХРАНИТЬ</button></div>
+</form>

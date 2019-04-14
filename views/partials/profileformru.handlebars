@@ -1,0 +1,9 @@
+<form id='form' method="post">
+    <div id="profile">
+        <input id="age" placeholder="возраст" name='age' type='number' value='{{age}}'/>
+        <input id="city" placeholder="город" name='city' type='text' value='{{city}}'/>
+        <input id="homepage" placeholder="Ваша страничка" name='homepage' type='url' value='{{url}}'/>
+    </div>
+    {{>csrf}}
+    <div id="button"><button id="register" type="submit">ДАЛЕЕ</button></div>
+</form>

@@ -20,6 +20,7 @@ app.use(
         extended: false
     })
 );
+
 app.use(
     cookieSession({
         secret: `I'm always angry.`,
@@ -32,6 +33,10 @@ app.use(csurf());
 app.use(function(req, res, next) {
     res.setHeader("x-frame-options", "DENY");
     res.locals.csrfToken = req.csrfToken();
+    res.locals.userId = req.session.userId;
+    if (req.session.language == undefined) {
+        req.session.language = "";
+    }
     next();
 });
 
@@ -39,31 +44,36 @@ app.get("/favicon.ico", (req, res) => {
     res.send("");
 });
 
+app.get("/lang/:language", (req, res) => {
+    if (req.params.language == "en") {
+        req.session.language = "";
+    } else {
+        req.session.language = req.params.language;
+    }
+    res.redirect(req.headers.referer || "/");
+});
+
 app.get("/petition", requireNoSignature, (req, res) => {
-    res.render("petition", {
-        layout: "main"
+    res.render("petition" + req.session.language, {
+        layout: "main" + req.session.language
     });
 });
 
 app.get("/login", requireLoggedOutUser, (req, res) => {
-    res.render("login", {
-        layout: "main"
+    res.render("login" + req.session.language, {
+        layout: "main" + req.session.language
     });
 });
 
 app.get("/register", requireLoggedOutUser, (req, res) => {
-    res.render("register", {
-        layout: "main"
+    res.render("register" + req.session.language, {
+        layout: "main" + req.session.language
     });
 });
-// app.get("/register", (req, res, next) => {
-//     if (req.session.userId) {
-//         res.redirect('/petition');
-//     }
 app.get("/profiles", requireLoggedInUser, (req, res) => {
     db.getUserProfile(req.session.userId).then(results => {
-        res.render("profiles", {
-            layout: "main",
+        res.render("profiles" + req.session.language, {
+            layout: "main" + req.session.language,
             age: results.rows[0].age,
             city: results.rows[0].city,
             homepage: results.rows[0].url
@@ -73,8 +83,8 @@ app.get("/profiles", requireLoggedInUser, (req, res) => {
 
 app.get("/thanks", requireSignature, (req, res) => {
     db.getSignature(req.session.userId).then(results => {
-        res.render("thanks", {
-            layout: "main",
+        res.render("thanks" + req.session.language, {
+            layout: "main" + req.session.language,
             signature: results.rows[0].signature
         });
     });
@@ -82,8 +92,8 @@ app.get("/thanks", requireSignature, (req, res) => {
 
 app.get("/signers", requireSignature, (req, res) => {
     db.getSigners().then(results => {
-        res.render("signers", {
-            layout: "main",
+        res.render("signers" + req.session.language, {
+            layout: "main" + req.session.language,
             signers: results.rows
         });
     });
@@ -91,8 +101,8 @@ app.get("/signers", requireSignature, (req, res) => {
 app.get("/signers/:city", requireSignature, (req, res) => {
     db.getSignersCity(req.params.city).then(results => {
         console.log(results.rows);
-        res.render("signers", {
-            layout: "main",
+        res.render("signers" + req.session.language, {
+            layout: "main" + req.session.language,
             signers: results.rows,
             city: req.params.city
         });
@@ -100,8 +110,8 @@ app.get("/signers/:city", requireSignature, (req, res) => {
 });
 app.get("/update", requireLoggedInUser, (req, res) => {
     db.getUserProfile(req.session.userId).then(results => {
-        res.render("update", {
-            layout: "main",
+        res.render("update" + req.session.language, {
+            layout: "main" + req.session.language,
             firstname: results.rows[0].firstname,
             lastname: results.rows[0].lastname,
             email: results.rows[0].email,
@@ -120,6 +130,7 @@ app.get("/logout", (req, res) => {
 });
 app.get("/deletesign", requireSignature, (req, res) => {
     db.deleteSignature(req.session.userId).then(() => {
+        req.session.signatureId = undefined;
         res.redirect("/petition");
     });
 });
@@ -132,8 +143,8 @@ app.post("/petition", requireNoSignature, (req, res) => {
             res.redirect("/thanks");
         })
         .catch(err => {
-            res.render("petition", {
-                layout: "main",
+            res.render("petition" + req.session.language, {
+                layout: "main" + req.session.language,
                 error: "An error occurred.Please try again",
                 signature: req.body.signature
             });
@@ -148,8 +159,8 @@ app.post("/register", requireLoggedOutUser, (req, res) => {
                 res.redirect("/login");
             })
             .catch(err => {
-                res.render("register", {
-                    layout: "main",
+                res.render("register" + req.session.language, {
+                    layout: "main" + req.session.language,
                     error: "An error occurred.Please try again",
                     firstname: req.body.firstname,
                     lastname: req.body.lastname,
@@ -167,35 +178,42 @@ app.post("/login", requireLoggedOutUser, (req, res) => {
                 checkPassword(req.body.password, results.rows[0].password)
                     .then(() => {
                         db.getSignature(results.rows[0].id).then(sigResult => {
+                            console.log(sigResult);
                             req.session.firstname = results.rows[0].firstname;
                             req.session.lastname = results.rows[0].lastname;
                             req.session.email = results.rows[0].email;
                             req.session.userId = results.rows[0].id;
                             if (sigResult.rows.length > 0) {
+                                console.log(
+                                    results.rows[0].email,
+                                    "got signature"
+                                );
+                                console.log(sigResult);
                                 req.session.signatureId = sigResult.rows[0].id;
                             }
+                            console.log("finishing login", req.session);
                             res.redirect("/profiles");
                         });
                     })
                     .catch(() => {
-                        res.render("login", {
-                            layout: "main",
+                        res.render("login" + req.session.language, {
+                            layout: "main" + req.session.language,
                             error:
                                 "Password or email is wrong. Please try again",
                             email: req.body.email
                         });
                     });
             } else {
-                res.render("login", {
-                    layout: "main",
+                res.render("login" + req.session.language, {
+                    layout: "main" + req.session.language,
                     error: "Password or email is wrong. Please try again",
                     email: req.body.email
                 });
             }
         })
         .catch(err => {
-            res.render("login", {
-                layout: "main",
+            res.render("login" + req.session.language, {
+                layout: "main" + req.session.language,
                 error: "An error occurred.Please try again",
                 email: req.body.email
             });
@@ -223,8 +241,8 @@ app.post("/profiles", requireLoggedInUser, (req, res) => {
             res.redirect("/petition");
         })
         .catch(err => {
-            res.render("profiles", {
-                layout: "main",
+            res.render("profiles" + req.session.language, {
+                layout: "main" + req.session.language,
                 error: "An error occurred.Please try again",
                 age: req.body.age,
                 city: req.body.city,
